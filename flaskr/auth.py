@@ -27,9 +27,9 @@ def register():
         error = None
 
         if not username:
-            error = 'Username is required'
+            error = 'Username is required.'
         elif not password:
-            error = 'Password is required'
+            error = 'Password is required.'
 
         if error is None:
             try:
@@ -38,8 +38,8 @@ def register():
                     (username, generate_password_hash(password))
                 )
                 database.commit()
-            except db.IntegrityError:
-                error = f"User {username} is already registered"
+            except database.IntegrityError:
+                error = f"User {username} is already registered."
             else:
                 return redirect(url_for('auth.login'))
 
@@ -59,14 +59,17 @@ def login():
             'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
 
-        if user is None:
-            error = 'Incorrect username'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password'
+        if user is None or not check_password_hash(user['password'], password):
+            error = 'Incorrect username or password.'
+
+        # if user is None:
+        #     error = 'Incorrect username'
+        # elif not check_password_hash(user['password'], password):
+        #     error = 'Incorrect password'
 
         if error is None:
             session.clear()
-            session['user_is'] = user['id']
+            session['user_id'] = user['id']
             return redirect(url_for('index'))
 
         flash(error)
@@ -82,7 +85,7 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = db.get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id)
+            'SELECT * FROM user WHERE id = ?', (user_id,)
         ).fetchone()
 
 

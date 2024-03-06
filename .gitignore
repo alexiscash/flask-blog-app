@@ -4,6 +4,7 @@
 __pycache__/
 
 instance/
+.vscode
 
 .pytest_cache/
 .coverage
